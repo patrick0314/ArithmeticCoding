@@ -1,3 +1,4 @@
+import sys
 import time
 import random
 import numpy as np
@@ -126,19 +127,24 @@ if __name__ == '__main__':
 
     set = ['a', 'b']
     probability = [0.8, 0.2]
-    data_length = 10
+    data_length = 20
     print('\nset = {}, probability = {}, data_length = {}'.format(set, probability, data_length))
     print('Each test with 100 random data')
     for i in range(5):
+        original_data = 0
+        compression_data = 0
         count = 0
         time_start = time.time()
         for j in range(100):
             text = random.choices(set, weights=tuple(probability), k=data_length)
+            original_data += sys.getsizeof(text)
             ciphertext = arithmetic(text, data_length, set, probability)
+            compression_data += sys.getsizeof(ciphertext)
             text1 = inv_arithmetic(ciphertext, data_length, set, probability)
             if text != text1:
                 count += 1
         time_end = time.time()
-        print('Test {} : Spending time = {}'.format(i+1, time_end-time_start))
-        print('Test {} : Accuracy = {} %'.format(i+1, (100-count)))
+        print('Test {} : Compression Rate = {}'.format(i+1, original_data / compression_data))
+        #print('Test {} : Spending time = {}'.format(i+1, time_end-time_start))
+        #print('Test {} : Accuracy = {} %'.format(i+1, (100-count)))
     print('\n')

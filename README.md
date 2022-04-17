@@ -62,6 +62,16 @@ while True:
         break
 ```
 
+## Performance - compression ratio
+
+* `data set = ['a', 'b']`  `data_length = 10`
+
+
+
+* `data set = ['a', 'b']`  `data_length = 20`
+
+
+<!--
 ## Performance - decoding without length of data
 
 * `data set = ['a', 'b']`  `data_length = 5`
@@ -87,6 +97,7 @@ while True:
 ![](https://i.imgur.com/J0qsMnF.png)
 
 ![](https://i.imgur.com/rQjvXVX.png)
+-->
 
 ## Performance - decoding with data length
 * `data set = ['a', 'b']`  `data_length = 5`
