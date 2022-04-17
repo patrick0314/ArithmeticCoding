@@ -39,6 +39,29 @@ Ex: k = 2, b = 5, C = 14
 
 ## Algorithm - Decoding
 
+根據 `C(b, k)`，可以還原出 C 和 b。
+
+```python
+#ciphertext = C(b, k)
+C, b = int(ciphertext, 2), len(ciphertext)
+```
+
+接著根據每筆資料的機率區間 S，來觀察包含 `C * k^(-b)` 以及 `(C+1) * k^(-b)` 的範圍。依序縮小範圍，每次更新範圍可以得到 recovered data 的一位 data。
+
+每次更新後的 lower bound 跟 upper bound 都會縮小，直到最後 recovered data 跟原始 data 長度相等的時候結束。
+
+```python
+while True:
+    for i in range(len(S)):
+        lower = lower + S[i] * (upper - lower)
+        upper = lower + S[i+1] * (upper - lower)
+        if lower < C*k^(-b) and (C+1)*k^(-b) < upper:
+            recovered_data.append(data_set[i])
+            break
+    if recovered_data == N:
+        break
+```
+
 ## Performance - decoding without length of data
 
 * `data set = ['a', 'b']`  `data_length = 5`
