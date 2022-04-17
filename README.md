@@ -66,10 +66,15 @@ while True:
 
 * `data set = ['a', 'b']`  `data_length = 10`
 
+![](https://i.imgur.com/Q9RrAAc.jpg)
 
+![](https://i.imgur.com/kXZolKJ.jpg)
 
 * `data set = ['a', 'b']`  `data_length = 20`
 
+![](https://i.imgur.com/dbme5BP.jpg)
+
+![](https://i.imgur.com/3grSkV8.jpg)
 
 <!--
 ## Performance - decoding without length of data
@@ -102,25 +107,25 @@ while True:
 ## Performance - decoding with data length
 * `data set = ['a', 'b']`  `data_length = 5`
 
-![](https://i.imgur.com/VDKFZUu.png)
+<!--![](https://i.imgur.com/VDKFZUu.png)-->
 
-![](https://i.imgur.com/AtF9RKv.png)
+<!--![](https://i.imgur.com/AtF9RKv.png)-->
 
 ![](https://i.imgur.com/Eui3IPj.png)
 
 * `data set = ['a', 'b']`  `data_length = 10`
 
-![](https://i.imgur.com/jmoeO0E.png)
+<!--![](https://i.imgur.com/jmoeO0E.png)-->
 
-![](https://i.imgur.com/5Yp1Pv1.png)
+<!--![](https://i.imgur.com/5Yp1Pv1.png)-->
 
 ![](https://i.imgur.com/wuuYEZL.png)
 
 * `data set = ['a', 'b']`  `data_length = 20`
 
-![](https://i.imgur.com/dkx6bkQ.png)
+<!--![](https://i.imgur.com/dkx6bkQ.png)-->
 
-![](https://i.imgur.com/6js0tpm.png)
+<!--![](https://i.imgur.com/6js0tpm.png)-->
 
 ![](https://i.imgur.com/GXXdiTa.png)
 
