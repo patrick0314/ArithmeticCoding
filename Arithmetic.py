@@ -125,8 +125,8 @@ if __name__ == '__main__':
     '''
 
     set = ['a', 'b']
-    probability = [0.5, 0.5]
-    data_length = 20
+    probability = [0.8, 0.2]
+    data_length = 10
     print('\nset = {}, probability = {}, data_length = {}'.format(set, probability, data_length))
     print('Each test with 100 random data')
     for i in range(5):
