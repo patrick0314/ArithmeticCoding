@@ -39,7 +39,15 @@ Ex: k = 2, b = 5, C = 14
 
 ## Algorithm - Decoding
 
-## Performance
+## Performance - decoding without length of data
+
+* `data set = ['a', 'b']`  `data_length = 5`
+
+![](https://i.imgur.com/9Oki9GL.png)
+
+![](https://i.imgur.com/YIBZun3.png)
+
+![](https://i.imgur.com/dpL4bBw.png)
 
 * `data set = ['a', 'b']`  `data_length = 10`
 
@@ -55,6 +63,28 @@ Ex: k = 2, b = 5, C = 14
 
 ![](https://i.imgur.com/J0qsMnF.png)
 
+![](https://i.imgur.com/rQjvXVX.png)
+
+## Performance - decoding with data length
+* `data set = ['a', 'b']`  `data_length = 5`
+
+![](https://i.imgur.com/VDKFZUu.png)
+
+![](https://i.imgur.com/AtF9RKv.png)
+
+![](https://i.imgur.com/Eui3IPj.png)
+
+* `data set = ['a', 'b']`  `data_length = 10`
+
+![](https://i.imgur.com/jmoeO0E.png)
+
+![](https://i.imgur.com/5Yp1Pv1.png)
+
+![](https://i.imgur.com/wuuYEZL.png)
+
+* `data set = ['a', 'b']`  `data_length = 20`
+
+![](https://i.imgur.com/GXXdiTa.png)
 
 ## Usage
 
