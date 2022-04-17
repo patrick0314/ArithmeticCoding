@@ -84,6 +84,10 @@ Ex: k = 2, b = 5, C = 14
 
 * `data set = ['a', 'b']`  `data_length = 20`
 
+![](https://i.imgur.com/dkx6bkQ.png)
+
+![](https://i.imgur.com/6js0tpm.png)
+
 ![](https://i.imgur.com/GXXdiTa.png)
 
 ## Usage
