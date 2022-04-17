@@ -1,8 +1,9 @@
-import numpy as np
+import time
 import random
+import numpy as np
 from matplotlib import pyplot as plt
 
-def arithmetic(text, set, probability):
+def arithmetic(text, data_length, set, probability):
     # Fool-Proof Mechanism
     if len(set) != len(probability) or sum(probability) != 1:
         print('=== ERROR !!!!! ===')
@@ -52,9 +53,7 @@ def arithmetic(text, set, probability):
         if pow(2, -b) > (upper - lower):
             b += 1
         else:
-            print('=== b = {} ==='.format(b))
             for C in range(pow(2, b)):
-                print(C * pow(2, -b), (C+1) * pow(2, -b))
                 if lower < C * pow(2, -b) and (C+1) * pow(2, -b) < upper:
                     while_break = True
                     break
@@ -64,9 +63,9 @@ def arithmetic(text, set, probability):
 
     return str(bin(C)[2:]).zfill(b)
 
-def inv_arithmetic(ciphertext, set, probability):
+def inv_arithmetic(ciphertext, data_length, set, probability):
     # Fool-Proof Mechanism
-    if len(set) != len(probability) or sum(probability) != 100:
+    if len(set) != len(probability) or sum(probability) != 1:
         print('=== ERROR !!!!! ===')
         return
 
@@ -90,6 +89,7 @@ def inv_arithmetic(ciphertext, set, probability):
             text.append(set[idx])
             break
     prev_len = 0
+    while_break = False
     while prev_len != len(text):
         prev_lower = lower
         prev_upper = upper
@@ -98,32 +98,47 @@ def inv_arithmetic(ciphertext, set, probability):
             upper = prev_lower + inteval[idx+1] * (prev_upper - prev_lower)
             if lower < p and p1 < upper:
                 text.append(set[idx])
+                if len(text) == data_length:
+                    while_break = True
                 break
+        if while_break:
+            break
         prev_len += 1
     
     return text
 
 if __name__ == '__main__':
-    '''
     # Error Encoding
+    '''
     set = ['a', 'b']
     probability = [.8, .2]
     text = ['a', 'a', 'a', 'b', 'a']
     ciphertext = arithmetic(text, set, probability)
     print('ciphertext = {}'.format(ciphertext))
+    text1 = inv_arithmetic(ciphertext, set, probability)
+    print('recovered text = {}'.format(text1))
     text = ['a', 'a', 'a', 'b', 'a', 'a']
     ciphertext = arithmetic(text, set, probability)
     print('ciphertext = {}'.format(ciphertext))
+    text1 = inv_arithmetic(ciphertext, set, probability)
+    print('recovered text = {}'.format(text1))
     '''
 
     set = ['a', 'b']
-    probability = [0.4, 0.6]
-    for i in range(10):
+    probability = [0.5, 0.5]
+    data_length = 20
+    print('\nset = {}, probability = {}, data_length = {}'.format(set, probability, data_length))
+    print('Each test with 100 random data')
+    for i in range(5):
         count = 0
+        time_start = time.time()
         for j in range(100):
-            text = random.choices(set, weights=tuple(probability), k=10)
-            ciphertext = arithmetic(text, set, probability)
-            text1 = inv_arithmetic(ciphertext, set, probability)
+            text = random.choices(set, weights=tuple(probability), k=data_length)
+            ciphertext = arithmetic(text, data_length, set, probability)
+            text1 = inv_arithmetic(ciphertext, data_length, set, probability)
             if text != text1:
                 count += 1
-        print('Test {} : accuracy = {} %'.format(i, 100-count))
+        time_end = time.time()
+        print('Test {} : Spending time = {}'.format(i+1, time_end-time_start))
+        print('Test {} : Accuracy = {} %'.format(i+1, (100-count)))
+    print('\n')
