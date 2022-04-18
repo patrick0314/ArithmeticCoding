@@ -48,6 +48,18 @@ def arithmetic(text, data_length, set, probability):
     '''
 
     # Find C and b s.t. lower < C * k^-b < (C+1) * k^-b < upper where k = 2 in general
+    # If upper <= 0.5 or lower > 0.5, we can directly add 0 or 1 to the ciphertext
+    ciphertext = ''
+    while upper <= 0.5 or lower > 0.5:
+        if upper <= 0.5:
+            ciphertext += '0'
+            lower *= 2
+            upper *= 2
+        elif lower > 0.5:
+            ciphertext += '1'
+            lower = lower * 2 - 1
+            upper = upper * 2 - 1
+    # Traditional method to find b and C
     b = 2
     while_break = False
     while True:
@@ -62,7 +74,7 @@ def arithmetic(text, data_length, set, probability):
                 break
             b += 1
 
-    return str(bin(C)[2:]).zfill(b)
+    return ciphertext + str(bin(C)[2:]).zfill(b)
 
 def inv_arithmetic(ciphertext, data_length, set, probability):
     # Fool-Proof Mechanism
@@ -109,22 +121,15 @@ def inv_arithmetic(ciphertext, data_length, set, probability):
     return text
 
 if __name__ == '__main__':
-    # Error Encoding
-    '''
     set = ['a', 'b']
-    probability = [.8, .2]
-    text = ['a', 'a', 'a', 'b', 'a']
-    ciphertext = arithmetic(text, set, probability)
-    print('ciphertext = {}'.format(ciphertext))
-    text1 = inv_arithmetic(ciphertext, set, probability)
-    print('recovered text = {}'.format(text1))
-    text = ['a', 'a', 'a', 'b', 'a', 'a']
-    ciphertext = arithmetic(text, set, probability)
-    print('ciphertext = {}'.format(ciphertext))
-    text1 = inv_arithmetic(ciphertext, set, probability)
-    print('recovered text = {}'.format(text1))
-    '''
+    probability = [0.8, 0.2]
+    text = 'aaabaa'
+    ciphertext = arithmetic(text, len(text), set, probability)
+    print(ciphertext)
+    recovered_text = inv_arithmetic(ciphertext, len(text), set, probability)
+    print(''.join(recovered_text))
 
+    '''
     set = ['a', 'b']
     probability = [0.8, 0.2]
     data_length = 20
@@ -148,3 +153,4 @@ if __name__ == '__main__':
         #print('Test {} : Spending time = {}'.format(i+1, time_end-time_start))
         #print('Test {} : Accuracy = {} %'.format(i+1, (100-count)))
     print('\n')
+    '''
