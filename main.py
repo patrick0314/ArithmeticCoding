@@ -22,8 +22,8 @@ if __name__ == '__main__':
 
         # Computation of Arithmetic Coding
         time_start = time.time()
-        ciphertext = arithmetic(text, data_set, probability)
-        recovered_text = inv_arithmetic(ciphertext, data_set, probability)
+        ciphertext = arithmetic(text, len(text), data_set, probability)
+        recovered_text = inv_arithmetic(ciphertext, len(text), data_set, probability)
         time_end = time.time()
 
         # Output
