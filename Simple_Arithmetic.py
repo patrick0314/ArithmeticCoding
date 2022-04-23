@@ -34,7 +34,6 @@ def arithmetic(text, data_length, set, probability):
         uppers.append(upper)
 
     # Plot Encoding Procedure
-    '''
     figure = plt.figure(figsize=(10, 2*len(text)))
     for i, (l, u) in enumerate(zip(lowers, uppers)):
         print(l, u)
@@ -46,7 +45,6 @@ def arithmetic(text, data_length, set, probability):
         ax = plt.gca()
         ax.get_yaxis().set_visible(False)
     plt.show()
-    '''
 
     # Find C and b s.t. lower < C * k^-b < (C+1) * k^-b < upper where k = 2 in general
     # If upper <= 0.5 or lower > 0.5, we can directly add 0 or 1 into the ciphertext
@@ -132,8 +130,10 @@ if __name__ == '__main__':
     # Otherwise, the float precision will overflow
     set = ['a', 'b']
     probability = [0.8, 0.2]
-    data_length = 10
-    text = random.choices(set, weights=tuple(probability), k=data_length)
+    #data_length = 10
+    #text = random.choices(set, weights=tuple(probability), k=data_length)
+    data_length = 6
+    text = 'aaabaa'
     ciphertext = arithmetic(text, data_length, set, probability)
     recovered_text = inv_arithmetic(ciphertext, data_length, set, probability)
 

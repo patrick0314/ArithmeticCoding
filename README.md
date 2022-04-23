@@ -104,8 +104,6 @@ for i in range(N):
             upper1 *= 2
 ```
 
-
-
 ## Performance
 
 * directly find lower bound and upper bound:
