@@ -24,7 +24,28 @@ for x in X:
     upper = lower + S[x+1] * (upper - lower)
 ```
 
-最後假設：
+當 length of data 不長的時候可以用上面的方法，但是當 length of data 太長的時候，直接更新 lower bound 或是 upper bound 最後會造成 floating point error。
+
+對此我們使用一個小技巧，當 lower bound ＞ 0.5 的時候，可以判斷說 ciphertext 會增加一個 `1`，又或是當 upper bound ≦ 0.5 的時候，可以判斷說 ciphertext 會增加一個 `0`。因此可以將上面的方法改成：
+
+```python
+ciphertext = ''
+for x in X:
+    lower = lower + S[x] * (upper - lower)
+    upper = lower + S[x+1] * (upper - lower)
+    
+    while lower > 0.5 or upper <= 0.5:
+        if lower > 0.5:
+            ciphertext += '1'
+            lower = lower * 2 - 1
+            upper = upper * 2 - 1
+        elif upper <= 0.5:
+            ciphertext += '0'
+            lower = lower * 2
+            upper = upper * 2
+```
+
+經過改良後，可以確保 lower bound 與 upper bound 的數值差不會太小，並且可以縮短找 C 和 b 的 time cost。最後假設：
 ```
 lower <= C * k^(-b) < (C+1) * k^(-b) <= upper
 ```
@@ -39,68 +60,17 @@ Ex: k = 2, b = 5, C = 14
 
 ## Algorithm - Decoding
 
-根據 `C(b, k)`，可以還原出 C 和 b。
+假設原始的 lower bound 跟 upper bound，並且假設 encoding 後的 C 和 b 的 lower bound 1 跟 upper bound 1。
 
-```python
-#ciphertext = C(b, k)
-C, b = int(ciphertext, 2), len(ciphertext)
-```
+## Performance
 
-接著根據每筆資料的機率區間 S，來觀察包含 `C * k^(-b)` 以及 `(C+1) * k^(-b)` 的範圍。依序縮小範圍，每次更新範圍可以得到 recovered data 的一位 data。
+* directly find lower bound and upper bound:
 
-每次更新後的 lower bound 跟 upper bound 都會縮小，直到最後 recovered data 跟原始 data 長度相等的時候結束。
+    ![](https://i.imgur.com/V3z0ITJ.jpg)
+    
+* performance of demo:
 
-```python
-while True:
-    for i in range(len(S)):
-        lower = lower + S[i] * (upper - lower)
-        upper = lower + S[i+1] * (upper - lower)
-        if lower < C*k^(-b) and (C+1)*k^(-b) < upper:
-            recovered_data.append(data_set[i])
-            break
-    if recovered_data == N:
-        break
-```
-
-## Performance - compression ratio
-
-* `data set = ['a', 'b']`  `data_length = 10`
-
-![](https://i.imgur.com/Q9RrAAc.jpg)
-
-![](https://i.imgur.com/kXZolKJ.jpg)
-
-* `data set = ['a', 'b']`  `data_length = 20`
-
-![](https://i.imgur.com/dbme5BP.jpg)
-
-![](https://i.imgur.com/3grSkV8.jpg)
-
-## Performance - decoding with data length
-
-* `data set = ['a', 'b']`  `data_length = 5`
-
-<!--![](https://i.imgur.com/VDKFZUu.png)-->
-
-<!--![](https://i.imgur.com/AtF9RKv.png)-->
-
-![](https://i.imgur.com/Eui3IPj.png)
-
-* `data set = ['a', 'b']`  `data_length = 10`
-
-<!--![](https://i.imgur.com/jmoeO0E.png)-->
-
-<!--![](https://i.imgur.com/5Yp1Pv1.png)-->
-
-![](https://i.imgur.com/wuuYEZL.png)
-
-* `data set = ['a', 'b']`  `data_length = 20`
-
-<!--![](https://i.imgur.com/dkx6bkQ.png)-->
-
-<!--![](https://i.imgur.com/6js0tpm.png)-->
-
-![](https://i.imgur.com/GXXdiTa.png)
+    ![](https://i.imgur.com/8GaDDYd.jpg)
 
 ## Usage
 
