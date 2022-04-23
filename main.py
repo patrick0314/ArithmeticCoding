@@ -29,4 +29,4 @@ if __name__ == '__main__':
         # Output
         print('\nAfter {} (sec), encoding and decoding are completely finished'.format(time_end-time_start))
         print('Arithmetic coding of \'{}\' = {}'.format(text, ciphertext))
-        print('Recovered text = \'{}\'\n'.format(''.join(recovered_text)))
+        print('Recovered text = \'{}\'\n'.format(recovered_text))
