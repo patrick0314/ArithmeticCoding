@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 
 def arithmetic(text, data_length, set, probability):
     # Fool-Proof Mechanism
-    if len(set) != len(probability) or round(sum(probability)) != 1 or len(set) != 2:
+    if len(set) != len(probability) or round(sum(probability)) != 1:
         print('=== ERROR !!!!! ===')
         return
 
@@ -15,12 +15,10 @@ def arithmetic(text, data_length, set, probability):
     for i in range(len(probability)):
         inte += probability[i]
         inteval.append(inte)
-
+    
     # Arithmetic Encoding
     # Initial Condition
-    idx = set.index(text[0])
-    lower = 0
-    upper = 1
+    lower, upper = 0, 1
     
     # Recursion
     # If upper <= 0.5 or lower > 0.5, we can directly add 0 or 1 into the ciphertext
@@ -30,7 +28,6 @@ def arithmetic(text, data_length, set, probability):
         prev = lower
         lower = prev + inteval[idx] * (upper - prev)
         upper = prev + inteval[idx+1] * (upper - prev)
-
         while lower > 0.5 or upper <= 0.5:
             if lower > 0.5:
                 ciphertext += '1'
@@ -40,7 +37,7 @@ def arithmetic(text, data_length, set, probability):
                 ciphertext += '0'
                 lower *= 2
                 upper *= 2
-
+                
     # Find C and b s.t. lower < C * k^-b < (C+1) * k^-b < upper where k = 2 in general
     # Traditional method to find b and C
     b = 2
@@ -61,7 +58,7 @@ def arithmetic(text, data_length, set, probability):
 
 def inv_arithmetic(ciphertext, data_length, set, probability):
     # Fool-Proof Mechanism
-    if len(set) != len(probability) or round(sum(probability)) != 1 or len(set) != 2:
+    if len(set) != len(probability) or round(sum(probability)) != 1:
         print('=== ERROR !!!!! ===')
         return
 
@@ -71,7 +68,7 @@ def inv_arithmetic(ciphertext, data_length, set, probability):
         inte += probability[i]
         inteval.append(inte)
 
-    #
+    # Arithmetic Decoding
     lower, upper = 0, 1
     lower1, upper1 = 0, 1
     j, times = 1, 0
@@ -90,9 +87,11 @@ def inv_arithmetic(ciphertext, data_length, set, probability):
                 lower1 = prev + int(ciphertext[j-1]) * pow(2, -j+times)
                 upper1 = prev + (int(ciphertext[j-1])+1) * pow(2, -j+times)
                 j += 1
+
         recovered_text.append(set[n])
-        lower = lower + inteval[n] * (upper-lower)
-        upper = lower + inteval[n+1] * (upper-lower)
+        prev = lower
+        lower = prev + inteval[n] * (upper-prev)
+        upper = prev + inteval[n+1] * (upper-prev)
         while lower > 0.5 or upper <= 0.5:
             if lower > 0.5:
                 lower = lower * 2 - 1
@@ -109,13 +108,19 @@ def inv_arithmetic(ciphertext, data_length, set, probability):
     
     return ''.join(recovered_text)
 
+def random_data(set, probability, data_length):
+    text = []
+    for _ in range(data_length):
+        text += random.choices(set, weights=tuple(probability), k=1)
+    text = ''.join(text)
+    return text
 
 if __name__ == '__main__':
     '''
-    set = ['a', 'b']
-    probability = [0.8, 0.2]
-    data_length = 1000
-    text = ''.join(random.choices(set, weights=tuple(probability), k=data_length))
+    set = ['a', 'b', 'c', 'd', 'e']
+    probability = [0.15, 0.35, 0.05, 0.25, 0.2]
+    data_length = 500
+    text = random_data(set, probability, data_length)
     print('Random text :', text, sys.getsizeof(text))
     ciphertext = arithmetic(text, data_length, set, probability)
     print('Ciphertext :', ciphertext, sys.getsizeof(ciphertext))
@@ -125,8 +130,8 @@ if __name__ == '__main__':
     print('Coding completion: ', text == recovered_text)
     '''
 
-    set = ['a', 'b']
-    probability = [0.8, 0.2]
+    set = ['a', 'b', 'c', 'd', 'e']
+    probability = [0.15, 0.35, 0.05, 0.25, 0.2]
     number_data = 1000
     for i in range(5):
         data_length = 500 * (i+1)
@@ -135,9 +140,9 @@ if __name__ == '__main__':
         count = 0
         time_start = time.time()
         for j in range(number_data):
-            text = ''.join(random.choices(set, weights=tuple(probability), k=data_length))
+            text = random_data(set, probability, data_length)
             original_data += sys.getsizeof(text)
-            ciphertext = arithmetic(text, data_length, set, probability)
+            ciphertext = arithmetic(text, data_length, set, probability).encode('acsii')
             compression_data += sys.getsizeof(ciphertext)
             text1 = inv_arithmetic(ciphertext, data_length, set, probability)
             if text != text1:

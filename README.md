@@ -125,7 +125,7 @@ for i in range(N):
 
 * 原本的 default data set 和 default probability 如同圖中所示，如果有需要更改的話可以從 `main.py` 中更改。
 
-  確保 `length of set == 2` 並且 `sum(probability) == 1`，不然會產生 error。
+  確保 `len(set) == len(probability)` & `sum(probability) == 1`，不然會產生 error。
 
 * 如果不須更改 data set 或是 data probability，抑或是更改完後，直接輸入想要做 encoding 的 data string。
 
