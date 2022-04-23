@@ -111,6 +111,7 @@ def inv_arithmetic(ciphertext, data_length, set, probability):
 
 
 if __name__ == '__main__':
+    '''
     set = ['a', 'b']
     probability = [0.8, 0.2]
     data_length = 1000
@@ -122,8 +123,8 @@ if __name__ == '__main__':
     print('Recovered text :', recovered_text)
     ciphertext1 = arithmetic(recovered_text, data_length, set, probability)
     print('Coding completion: ', text == recovered_text)
-
     '''
+
     set = ['a', 'b']
     probability = [0.8, 0.2]
     number_data = 1000
@@ -148,4 +149,3 @@ if __name__ == '__main__':
         print('Test {} : Spending time = {}'.format(i+1, time_end-time_start))
         print('Test {} : Accuracy = {} %'.format(i+1, (number_data-count)/number_data*100))
     print('\n')
-    '''
