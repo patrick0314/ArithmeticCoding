@@ -106,9 +106,12 @@ for i in range(N):
 
 ## Performance
 
-* directly find lower bound and upper bound:
+* find bound and upper bound:
 
-    ![](https://i.imgur.com/V3z0ITJ.jpg)
+    set = ['a', 'b'], probability = [0.8, 0.2]
+    text = 'aaabaa'
+
+    ![](https://i.imgur.com/ydXv5mm.jpg)
     
 * performance of demo:
 
