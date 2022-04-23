@@ -62,6 +62,50 @@ Ex: k = 2, b = 5, C = 14
 
 假設原始的 lower bound 跟 upper bound，並且假設 encoding 後的 C 和 b 的 lower bound 1 跟 upper bound 1。
 
+從 ciphertext 的右側開始掃描，依次更新 lower bound 1 & upper bound 1。如果 ciphertext = `0`，代表說 bound range 1 在原範圍的 0-0.5 之中；反之如果 ciphertext = `1`，則代表說 bound range 1 在原範圍的 0.5-1 之中。
+
+接著判斷說 recovered text 是否可以有確定的值，也就是 lower bound & upper bound 是否包含了 lower bound 1 和 upper bound 1。
+
+也就是更新 lower bound & upper bound 的同時，如果發現沒有確定的 recovered text 時，更新 lower bound 1 & upper bound 1。
+
+另外，為了避免 lower bound 和 upper bound 出現 floating point error，當 lower bound > 0.5 或是 upper bound ≦ 0.5 的時候，同樣要做倍數的運算。此時，要連動 lower bound 1 & upper bound 1 做相同的運算。
+
+```python
+lower, upper = 0, 1
+lower1, upper = 0, 1
+j = 1
+X = ''
+for i in range(N):
+    check = True
+    while check:
+        for_break = True
+        for n in range(len(S)):
+            if lower + inteval[n] * (upper-lower) <= lower1 and upper + inteval[n+1] * (upper-lower) > upper1:
+                for_break, check = False, False
+                break
+        if for_break:
+            lower1 = lower1 + ciphertext[j] * 2**(-j)
+            upper1 = upper1 + (ciphertext[j]+1) * 2**(-j)
+            
+    X += set[n]
+    lower = lower + inteval[n] * (upper-lower)
+    upper = lower + inteval[n+1] * (upper-lower)
+    
+    while lower > 0.5 or upper <= 0.5:
+        if lower > 0.5:
+            lower = lower * 2 + 1
+            upper = upper * 2 + 1
+            lower1 = lower1 * 2 + 1
+            upper1 = upper1 * 2 + 1
+        if upper <= 0.5:
+            lower *= 2
+            upper *= 2
+            lower1 *= 2
+            upper1 *= 2
+```
+
+
+
 ## Performance
 
 * directly find lower bound and upper bound:
