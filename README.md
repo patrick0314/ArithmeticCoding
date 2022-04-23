@@ -106,14 +106,20 @@ for i in range(N):
 
 ## Performance
 
-* find bound and upper bound:
+* lower bound 和 upper bound 的更新：
 
     set = ['a', 'b'], probability = [0.8, 0.2]
+    
     text = 'aaabaa'
 
-    ![](https://i.imgur.com/ydXv5mm.jpg)
+    ![](https://i.imgur.com/5F5Ir54.jpg)
+
+* 比較不同的 set 跟 probability distibution：
     
-* performance of demo:
+    ![](https://i.imgur.com/O1FfDLB.jpg)
+
+    
+* 比較不同的 length of data：
 
     ![](https://i.imgur.com/8GaDDYd.jpg)
 
