@@ -76,35 +76,8 @@ while True:
 
 ![](https://i.imgur.com/3grSkV8.jpg)
 
-<!--
-## Performance - decoding without length of data
-
-* `data set = ['a', 'b']`  `data_length = 5`
-
-![](https://i.imgur.com/9Oki9GL.png)
-
-![](https://i.imgur.com/YIBZun3.png)
-
-![](https://i.imgur.com/dpL4bBw.png)
-
-* `data set = ['a', 'b']`  `data_length = 10`
-
-![](https://i.imgur.com/Uxdtdlq.png)
-
-![](https://i.imgur.com/5JkBllv.png)
-
-![](https://i.imgur.com/E1oul3e.png)
-
-* `data set = ['a', 'b']`  `data_length = 20`
-
-![](https://i.imgur.com/BuzVs30.png)
-
-![](https://i.imgur.com/J0qsMnF.png)
-
-![](https://i.imgur.com/rQjvXVX.png)
--->
-
 ## Performance - decoding with data length
+
 * `data set = ['a', 'b']`  `data_length = 5`
 
 <!--![](https://i.imgur.com/VDKFZUu.png)-->

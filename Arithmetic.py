@@ -11,54 +11,37 @@ def arithmetic(text, data_length, set, probability):
         return
 
     # Preprocess - Inteval of Probability 
-    inteval, inte = np.zeros(1), 0
+    inteval, inte = [0], 0
     for i in range(len(probability)):
         inte += probability[i]
-        inteval = np.append(inteval, inte)
+        inteval.append(inte)
 
     # Arithmetic Encoding
     # Initial Condition
     idx = set.index(text[0])
     lower = inteval[idx]
     upper = inteval[idx+1]
+    
     # Recursion
-    lowers, uppers = [lower], [upper]
+    # If upper <= 0.5 or lower > 0.5, we can directly add 0 or 1 into the ciphertext
+    ciphertext = ''
     for i in range(1, len(text)):
         idx = set.index(text[i])
         prev = lower
         lower = prev + inteval[idx] * (upper - prev)
         upper = prev + inteval[idx+1] * (upper - prev)
 
-        lowers.append(lower)
-        uppers.append(upper)
-    
-    # Plot Encoding Procedure
-    '''
-    figure = plt.figure(figsize=(10, 2*len(test)))
-    for i, (l, u) in enumerate(zip(lowers, uppers)):
-        print(l, u)
-        figure.add_subplot(len(test), 1, i+1)
-        x = np.arange(l, u, 0.0000001)
-        y = np.ones(x.shape)
-        plt.plot(x, y, color='Red', lw=30)
-        plt.xlim(0, 1), plt.ylim(0.9, 1.1)
-        ax = plt.gca()
-        ax.get_yaxis().set_visible(False)
-    plt.show()
-    '''
+        while lower > 0.5 or upper <= 0.5:
+            if lower > 0.5:
+                ciphertext += '1'
+                lower = lower * 2 - 1
+                upper = upper * 2 - 1
+            elif upper <= 0.5:
+                ciphertext += '0'
+                lower *= 2
+                upper *= 2
 
     # Find C and b s.t. lower < C * k^-b < (C+1) * k^-b < upper where k = 2 in general
-    # If upper <= 0.5 or lower > 0.5, we can directly add 0 or 1 to the ciphertext
-    ciphertext = ''
-    while upper <= 0.5 or lower > 0.5:
-        if upper <= 0.5:
-            ciphertext += '0'
-            lower *= 2
-            upper *= 2
-        elif lower > 0.5:
-            ciphertext += '1'
-            lower = lower * 2 - 1
-            upper = upper * 2 - 1
     # Traditional method to find b and C
     b = 2
     while_break = False
@@ -82,75 +65,88 @@ def inv_arithmetic(ciphertext, data_length, set, probability):
         print('=== ERROR !!!!! ===')
         return
 
-    # Preprocess - Inteval of Probability 
-    inteval, inte = np.zeros(1), 0
+    # Preprocess - Inteval of Probability
+    inteval, inte = [0], 0
     for i in range(len(probability)):
         inte += probability[i]
-        inteval = np.append(inteval, inte)
-    
-    # Find C and b in arithmetic encoding
-    b, C = len(ciphertext), int(ciphertext, 2)
-    p = C * pow(2, -b)
-    p1 = (C+1) * pow(2, -b)
+        inteval.append(inte)
 
-    # Recursively find the range include b and C
-    text = []
-    for idx in range(len(inteval)-1):
-        if inteval[idx] < p and p1 < inteval[idx+1]:
-            lower = inteval[idx]
-            upper = inteval[idx+1]
-            text.append(set[idx])
-            break
-    prev_len = 0
-    while_break = False
-    while prev_len != len(text):
-        prev_lower = lower
-        prev_upper = upper
-        for idx in range(len(inteval)-1):
-            lower = prev_lower + inteval[idx] * (prev_upper - prev_lower)
-            upper = prev_lower + inteval[idx+1] * (prev_upper - prev_lower)
-            if lower < p and p1 < upper:
-                text.append(set[idx])
-                if len(text) == data_length:
-                    while_break = True
-                break
-        if while_break:
-            break
-        prev_len += 1
+    #
+    lower, upper = 0, 1
+    lower1, upper1 = 0, 1
+    j = 1
+    recovered_text = []
+    for i in range(data_length):
+        check = 1
+        while check:
+            for_break = True
+            for n in range(len(inteval)):
+                if lower + inteval[n] * (upper-lower) <= lower1 and lower + inteval[n+1] * (upper-lower) >= upper1:
+                    check = 0
+                    for_break = False
+                    break
+            if for_break:
+                if ciphertext[j-1] == '0':
+                    upper1 = lower1 + pow(2, -j)
+                elif ciphertext[j-1] == '1':
+                    lower1 = lower1 + pow(2, -j)
+                j += 1
+        recovered_text.append(set[n])
+        lower = lower + inteval[n] * (upper-lower)
+        upper = lower + inteval[n+1] * (upper-lower)
+        while lower > 0.5 or upper <= 0.5:
+            if lower > 0.5:
+                lower = lower * 2 - 1
+                upper = upper * 2 - 1
+                lower1 = lower1 * 2 - 1
+                upper1 = upper1 * 2 - 1
+            if upper <= 0.5:
+                lower *= 2
+                upper *= 2
+                lower1 *= 2
+                upper1 *= 2
     
-    return text
+    return recovered_text
+
 
 if __name__ == '__main__':
     set = ['a', 'b']
     probability = [0.8, 0.2]
-    text = 'aaabaa'
-    ciphertext = arithmetic(text, len(text), set, probability)
-    print(ciphertext)
-    recovered_text = inv_arithmetic(ciphertext, len(text), set, probability)
-    print(''.join(recovered_text))
+    data_length = 50
+    text = random.choices(set, weights=tuple(probability), k=data_length)
+    #text = ['a', 'a', 'a', 'b', 'a', 'a']
+    #data_length = 6
+    ciphertext = arithmetic(text, data_length, set, probability)
+    recovered_text = inv_arithmetic(ciphertext, data_length, set, probability)
+    ciphertext1 = arithmetic(recovered_text, data_length, set, probability)
+
+    print('Random text :', text)
+    print('Ciphertext :', ciphertext)
+    print('Recovered text :', recovered_text)
+    print('Coding completion: ', text == recovered_text)
 
     '''
     set = ['a', 'b']
     probability = [0.8, 0.2]
-    data_length = 20
+    data_length = 200
     print('\nset = {}, probability = {}, data_length = {}'.format(set, probability, data_length))
     print('Each test with 100 random data')
-    for i in range(5):
+    for i in range(1):
         original_data = 0
         compression_data = 0
         count = 0
         time_start = time.time()
-        for j in range(100):
+        for j in range(1):
             text = random.choices(set, weights=tuple(probability), k=data_length)
             original_data += sys.getsizeof(text)
             ciphertext = arithmetic(text, data_length, set, probability)
             compression_data += sys.getsizeof(ciphertext)
-            text1 = inv_arithmetic(ciphertext, data_length, set, probability)
-            if text != text1:
-                count += 1
+            #text1 = inv_arithmetic(ciphertext, data_length, set, probability)
+            #if text != text1:
+            #    count += 1
         time_end = time.time()
         print('Test {} : Compression Rate = {}'.format(i+1, original_data / compression_data))
-        #print('Test {} : Spending time = {}'.format(i+1, time_end-time_start))
-        #print('Test {} : Accuracy = {} %'.format(i+1, (100-count)))
+        print('Test {} : Spending time = {}'.format(i+1, time_end-time_start))
+        print('Test {} : Accuracy = {} %'.format(i+1, (100-count)))
     print('\n')
     '''
