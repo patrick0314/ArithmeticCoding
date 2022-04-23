@@ -140,3 +140,14 @@ if __name__ == '__main__':
     print('Random text :', text)
     print('Ciphertext :', ciphertext)
     print('Recovered text :', recovered_text)
+
+    set = ['a', 'b', 'c', 'd', 'e']
+    probability = [0.15, 0.35, 0.05, 0.25, 0.2]
+    data_length = 3
+    text = 'bdb'
+    ciphertext = arithmetic(text, data_length, set, probability)
+    recovered_text = inv_arithmetic(ciphertext, data_length, set, probability)
+
+    print('Random text :', text)
+    print('Ciphertext :', ciphertext)
+    print('Recovered text :', recovered_text)
