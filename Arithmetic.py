@@ -132,7 +132,7 @@ if __name__ == '__main__':
 
     set = ['a', 'b', 'c', 'd', 'e']
     probability = [0.15, 0.35, 0.05, 0.25, 0.2]
-    number_data = 1000
+    number_data = 500
     for i in range(5):
         data_length = 500 * (i+1)
         original_data = 0
@@ -142,7 +142,7 @@ if __name__ == '__main__':
         for j in range(number_data):
             text = random_data(set, probability, data_length)
             original_data += sys.getsizeof(text)
-            ciphertext = arithmetic(text, data_length, set, probability).encode('acsii')
+            ciphertext = arithmetic(text, data_length, set, probability)
             compression_data += sys.getsizeof(ciphertext)
             text1 = inv_arithmetic(ciphertext, data_length, set, probability)
             if text != text1:
