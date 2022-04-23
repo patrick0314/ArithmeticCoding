@@ -130,8 +130,10 @@ if __name__ == '__main__':
     print('Coding completion: ', text == recovered_text)
     '''
 
+    # Comparison with data length
+    '''
     set = ['a', 'b', 'c', 'd', 'e']
-    probability = [0.15, 0.35, 0.05, 0.25, 0.2]
+    probability = [0.8, 0.05, 0.1, 0.025, 0.025]
     number_data = 500
     for i in range(5):
         data_length = 500 * (i+1)
@@ -150,7 +152,44 @@ if __name__ == '__main__':
         time_end = time.time()
         print('\nset = {}, probability = {}, data_length = {}'.format(set, probability, data_length))
         print('Each test with {} random data'.format(number_data))
-        print('Test {} : Compression Rate = {}'.format(i+1, original_data / compression_data))
+        print('Test {} : Compression Rate = {}'.format(i+1, (original_data * len(set)) / (compression_data * 2)))
         print('Test {} : Spending time = {}'.format(i+1, time_end-time_start))
         print('Test {} : Accuracy = {} %'.format(i+1, (number_data-count)/number_data*100))
+    print('\n')
+    '''
+
+    # Comparison with set length and different distribution of data
+    set1 = ['a', 'b']
+    probability1 = [0.5, 0.5]
+    set2 = ['a', 'b']
+    probability2 = [0.8, 0.2]
+    set3 = ['a', 'b', 'c', 'd', 'e']
+    probability3 = [0.2, 0.2, 0.2, 0.2, 0.2]
+    set4 = ['a', 'b', 'c', 'd', 'e']
+    probability4 = [0.8, 0.05, 0.1, 0.025, 0.025]
+    set5 = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+    probability5 = [0.8, 0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 0.0125, 0.0125]
+    number_data = 500
+    sets = [set1, set2, set3, set4, set5]
+    probabilitys = [probability1, probability2, probability3, probability4, probability5]
+    for set, probability in zip(sets, probabilitys):
+        data_length = 2000
+        original_data = 0
+        compression_data = 0
+        count = 0
+        time_start = time.time()
+        for j in range(number_data):
+            text = random_data(set, probability, data_length)
+            original_data += sys.getsizeof(text)
+            ciphertext = arithmetic(text, data_length, set, probability)
+            compression_data += sys.getsizeof(ciphertext)
+            text1 = inv_arithmetic(ciphertext, data_length, set, probability)
+            if text != text1:
+                count += 1
+        time_end = time.time()
+        print('\nset = {}, probability = {}, data_length = {}'.format(set, probability, data_length))
+        print('Each test with {} random data'.format(number_data))
+        print('Compression Rate = {}'.format((original_data * len(set)) / (compression_data * 2)))
+        print('Spending time = {}'.format(time_end-time_start))
+        print('Accuracy = {} %'.format((number_data-count)/number_data*100))
     print('\n')
