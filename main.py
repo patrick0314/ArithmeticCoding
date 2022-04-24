@@ -20,6 +20,12 @@ if __name__ == '__main__':
             print('\n=== See ya !!! ===')
             break
 
+        if data_set != ['a', 'b'] or probability != [0.5, 0.5]:
+            print('\n= = = = = = = = = = = = = = = = = = =')
+            print('default data set is {}'.format(data_set))
+            print('default probability is {}'.format(probability))
+            print('= = = = = = = = = = = = = = = = = = =')
+
         # Computation of Arithmetic Coding
         time_start = time.time()
         ciphertext = arithmetic(text, len(text), data_set, probability)
