@@ -1,110 +1,207 @@
 # Arithmetic Coding
 
-Arithmetic coding 則是將多筆資料一起編碼，近年來的資料壓縮技術大多使用 Arithmetic coding，壓縮效率比 Huffman coding 更高。
+Arithmetic coding 是將一段 text message 利用 0-1 的區間來表示。當 text message 越長，用來表示此 text message 的區間就越小，也就是代表 length of coding 就越長。
+
+而越常出現的 text，區間縮小的速度就會越慢，則可以縮短 length of coding。隨著 length of text message 的增加，Arithmetic coding 之 entropy 可以趨近無雜訊編碼的理論極限。
+
+另外，因為大部分的時候，無法事先統計好 probability distribution，因此又發明了另一種 algorithm - adaptive Arithmetic Coding。不需要事先給定 probability distribution，而是在對 text message 進行 encoding & decoding 的同時，去更新 probability distribution。
 
 ## Algorithm - Encoding
 
-統計 data 中每筆資料的出現機率 p，接著計算每筆資料的機率區間 S：
+設定 data set 有 M 個可能的值（ex: 1, 2, .., M），每個 data 出現機率為 Pn，使用 k 進位進行編碼。
+
+先計算 probability inteval of each element：
 
 ```python
-S = [0]
+s = 0
+S = [s]
 for p in P:
-    S.append(S[-1]+p)
+    s += p
+    S.append(s)
 ```
 
-接著根據 Arithmetic Coding 的演算法來更新 lower bound and upper bound：
+接著，依序放入 text message，更新 lower & upper bound：
 
 ```python
-# Initial
-lower, upper = S[X[0]], S[X[0]+1]
-
-# Update
-for x in X:
-    lower = lower + S[x] * (upper - lower)
-    upper = lower + S[x+1] * (upper - lower)
+for t in text:
+    lower = lower + S[t-1] * (upper-lower)
+    upper = lower + S[t] * (upper-lower)
 ```
 
-當 length of data 不長的時候可以用上面的方法，但是當 length of data 太長的時候，直接更新 lower bound 或是 upper bound 最後會造成 floating point error。
-
-對此我們使用一個小技巧，當 lower bound ＞ 0.5 的時候，可以判斷說 ciphertext 會增加一個 `1`，又或是當 upper bound ≦ 0.5 的時候，可以判斷說 ciphertext 會增加一個 `0`。因此可以將上面的方法改成：
+為了避免當 length of text message 過長時，lower & upper bound 會極度接近，造成精度不足，出現 floating point error。
+因此，當 lower bound > 0.5 或是 upper bound <= 0.5 時，會對於 lower bound 以及 upper bound 同時做擴增的動作。
 
 ```python
-ciphertext = ''
-for x in X:
-    lower = lower + S[x] * (upper - lower)
-    upper = lower + S[x+1] * (upper - lower)
-    
-    while lower > 0.5 or upper <= 0.5:
-        if lower > 0.5:
-            ciphertext += '1'
-            lower = lower * 2 - 1
-            upper = upper * 2 - 1
-        elif upper <= 0.5:
-            ciphertext += '0'
-            lower = lower * 2
-            upper = upper * 2
+while lower > 0.5 or upper <= 0.5:
+    if lower > 0.5:
+        ciphertext += '1'
+        lower = lower * 2 - 1
+        upper = upper * 2 - 1
+    elif upper <= 0.5:
+        ciphertext += '0'
+        lower *= 2
+        upper *= 2
 ```
 
-經過改良後，可以確保 lower bound 與 upper bound 的數值差不會太小，並且可以縮短找 C 和 b 的 time cost。最後假設：
-```
-lower <= C * k^(-b) < (C+1) * k^(-b) <= upper
-```
-其中 C 和 b 皆為整數，且 b 越小越理想。
+最後，得到 lower & upper bound 之後，通過計算找出 b & C，使得 lower bound < C * 2^(-b) < (C+1) * 2^(-b) < upper bound。
 
-找出 C 和 b 之後，data x 的編碼則是用 k 進位 b bits 來表示 C。
-
+```python
+while True:
+    if 2**(-b) > (upper-lower):
+        b += 1
+    else:
+        for C in range(2**(b)):
+            if lower < C * 2**(-b) and (C+1) * 2**(-b) < upper:
+                while_break = True
+                break
+        if while_break:
+            break
+        b += 1
 ```
-Ex: k = 2, b = 5, C = 14
-  → C(b, k) = 01110
+
+找出 b & C 之後，encoding 的方式就是將 C 用 b 個 bits 的二進位去做表示。並且要記得加上前面在做擴增動作時，已經確定的 ciphertext。
+
+```python
+ciphertext = ciphertext + str(bin(C)[2:]).zfill(b)
 ```
 
 ## Algorithm - Decoding
 
-假設原始的 lower bound 跟 upper bound，並且假設 encoding 後的 C 和 b 的 lower bound 1 跟 upper bound 1。
+設定 data set 有 M 個可能的值（ex: 1, 2, .., M），每個 data 出現機率為 Pn，使用 k 進位進行解碼，原始 length of data 為 N。
 
-從 ciphertext 的右側開始掃描，依次更新 lower bound 1 & upper bound 1。如果 ciphertext = `0`，代表說 bound range 1 在原範圍的 0-0.5 之中；反之如果 ciphertext = `1`，則代表說 bound range 1 在原範圍的 0.5-1 之中。
+先計算 probability inteval of each element：
 
-接著判斷說 recovered text 是否可以有確定的值，也就是 lower bound & upper bound 是否包含了 lower bound 1 和 upper bound 1。
+```python
+s = 0
+S = [s]
+for p in P:
+    s += p
+    S.append(s)
+```
 
-也就是更新 lower bound & upper bound 的同時，如果發現沒有確定的 recovered text 時，更新 lower bound 1 & upper bound 1。
-
-另外，為了避免 lower bound 和 upper bound 出現 floating point error，當 lower bound > 0.5 或是 upper bound ≦ 0.5 的時候，同樣要做倍數的運算。此時，要連動 lower bound 1 & upper bound 1 做相同的運算。
+接著依序放入 ciphtertext，並且透過 lower1 & upper1 bound 去計算原始 lower bound 跟 upper bound。
 
 ```python
 lower, upper = 0, 1
-lower1, upper = 0, 1
-j = 1
-X = ''
+lower1, upper1 = 0, 1
+j = 0
 for i in range(N):
     check = True
     while check:
-        for_break = True
+        exist = False
         for n in range(len(S)):
-            if lower + inteval[n] * (upper-lower) <= lower1 and upper + inteval[n+1] * (upper-lower) > upper1:
-                for_break, check = False, False
-                break
-        if for_break:
-            lower1 = lower1 + ciphertext[j] * 2**(-j)
-            upper1 = upper1 + (ciphertext[j]+1) * 2**(-j)
-            
-    X += set[n]
-    lower = lower + inteval[n] * (upper-lower)
-    upper = lower + inteval[n+1] * (upper-lower)
-    
-    while lower > 0.5 or upper <= 0.5:
-        if lower > 0.5:
-            lower = lower * 2 + 1
-            upper = upper * 2 + 1
-            lower1 = lower1 * 2 + 1
-            upper1 = upper1 * 2 + 1
-        if upper <= 0.5:
-            lower *= 2
-            upper *= 2
-            lower1 *= 2
-            upper1 *= 2
+            if lower + (upper-lower) * S[n] <= lower1 and lower + (upper-lower) * S[n+1] >= upper1:
+                check = False
+                exist = True
+        if not exist:
+            lower1 = lower1 + (ciphertext[j-1]+1) * 2**(-j)
+            upper1 = lower1 + ciphertext[j-1] * 2**(-j)
+    text += n
+    lower = lower + (upper-lower) * S[n]
+    upper = upper + (upper-lower) * S[n+1]
 ```
 
-## Performance
+為了避免當 length of text message 過長時，lower & upper bound 會極度接近，造成精度不足，出現 floating point error。
+因此，當 lower bound > 0.5 或是 upper bound <= 0.5 時，會對於 lower bound 以及 upper bound 同時做擴增的動作。
+與 encoding 不同的地方在於，要同時對 lower & upper bound 以及 lower1 & upper1 bound 做擴增。
+
+```python
+while lower > 0.5 or upper <= 0.5:
+    if lower > 0.5:
+        lower = lower * 2 - 1
+        upper = upper * 2 - 1
+        lower1 = lower1 * 2 - 1
+        upper1 = upper1 * 2 - 1
+    elif upper <= 0.5:
+        lower *= 2
+        upper *= 2
+        lower1 *= 2
+        upper1 *= 2
+```
+
+## Adaptive Algorithm - Encoding
+
+假設 data set 有 M 個值（ex: 1, 2, ..., M），因此 initial probability 設定為 uniform 的：
+
+```python
+dic = {'total':0}
+for s in set:
+    dic[s] = 1
+    dic['total'] += 1
+```
+
+接著，encoding 的演算法與前面相同，只是每次 for loop 開始時，都要先重新計算過一次 inteval of probability，並且在 for loop 的最後要對 dic 去做更新。
+
+```python
+def inteval(dic):
+    S = {}
+    for k in dic.keys():
+        if k != 'total':
+            S[k] = [prev, prev + dic[k]/dic['total']]
+            prev += dic[k]/dic['total']
+    return S
+
+for t in text:
+    S = inteval(dic)
+    lower = lower + S[t][0] * (upper-lower)
+    upper = lower + S[t][1] * (upper-lower)
+    dic[t] += 1
+    dic['total'] += 1
+```
+
+接著同樣要去避免 floating point error，所以要做 lower & upper bound 的擴增動作。
+
+最後，一樣找出 b & C 能夠符合 lower & upper bound condition。
+
+找出 b & C 之後，encoding 的方式就是將 C 用 b 個 bits 的二進位去做表示。並且要記得加上前面在做擴增動作時，已經確定的 ciphertext。
+
+## Adaptive Algorithm - Decoding
+
+假設 data set 有 M 個值（ex: 1, 2, ..., M），因此 initial probability 設定為 uniform 的：
+
+```python
+dic = {'total':0}
+for s in set:
+    dic[s] = 1
+    dic['total'] += 1
+```
+
+接著，decoding 的演算法與前面相同，只是每次 for loop 開始時，都要先重新計算過一次 inteval of probability，並且在 for loop 的最後要對 dic 去做更新。
+
+```python
+def inteval(dic):
+    S = {}
+    for k in dic.keys():
+        if k != 'total':
+            S[k] = [prev, prev + dic[k]/dic['total']]
+            prev += dic[k]/dic['total']
+    return S
+
+lower, upper = 0, 1
+lower1, upper1 = 0, 1
+j = 0
+for i in range(N):
+    S = inteval(dic)
+    check = True
+    while check:
+        exist = False
+        for k in S.keys():
+            if lower + (upper-lower) * S[k][0] <= lower1 and lower + (upper-lower) * S[k][1] >= upper1:
+                check = False
+                exist = True
+        if not exist:
+            lower1 = lower1 + (ciphertext[j-1]+1) * 2**(-j)
+            upper1 = lower1 + ciphertext[j-1] * 2**(-j)
+    text += n
+    lower = lower + (upper-lower) * S[k][0]
+    upper = upper + (upper-lower) * S[k][1]
+    dic[k] += 1
+    dic['total'] += 1
+```
+
+然後在 decoding 的過程中，一樣注意 floating point error 的發生，同時對 lower & upper bound 以及 lower1 & upper1 bound 去做擴增。
+
+## Performance - Arithmetic Coding
 
 * lower bound 和 upper bound 的更新：
 
@@ -114,7 +211,7 @@ for i in range(N):
 
     ![](https://i.imgur.com/5F5Ir54.jpg)
 
-* 比較不同的 set 跟 probability distibution：
+* 比較不同的 data set & probability distibution：
     
     ![](https://i.imgur.com/O1FfDLB.jpg)
 
@@ -122,6 +219,16 @@ for i in range(N):
 * 比較不同的 length of data：
 
     ![](https://i.imgur.com/8GaDDYd.jpg)
+
+## Performance - Adaptive Arithmetic Coding
+
+* 比較不同 data set & probability distribution
+
+    ![](https://i.imgur.com/lSesjE1.jpg)
+
+* 比較不同 length of data
+
+    ![](https://i.imgur.com/nynXNQf.jpg)
 
 ## Usage
 
