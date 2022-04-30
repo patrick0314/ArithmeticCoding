@@ -234,22 +234,15 @@ for i in range(N):
 
 * 執行 `main.py`，會得到下圖的 command
 
-![](https://i.imgur.com/l3BDRIk.png)
+    ![](https://i.imgur.com/q0Hdm1X.jpg)
 
-* 原本的 default data set 和 default probability 如同圖中所示，如果有需要更改的話可以從 `main.py` 中更改。
+* 接著輸入 `0` 進入一般的 Arithmetic Coding；輸入 `1` 進入 Adaptive Arithmetic Coding；輸入其他則會出現 error
 
-  確保 `len(set) == len(probability)` & `sum(probability) == 1`，不然會產生 error。
+    ![](https://i.imgur.com/ftYLtvN.jpg)
 
-* 如果不須更改 data set 或是 data probability，抑或是更改完後，直接輸入想要做 encoding 的 data string。
+    ![](https://i.imgur.com/oXyqr6V.jpg)
 
-![](https://i.imgur.com/zqKl9EH.png)
+> 若要更改 data set 或是 probability of data 的話，請事先進入 `main.py` 進行編輯
 
-* 按下 `enter` 之後，會 output 出 encoding + decoding 的時間，並且輸出 encoded ciphertext 以及 recovered text。
-
-![](https://i.imgur.com/yXYCNPb.png)
-
-* 如果想要退出程式，則輸入 `quit` 就會自動結束
-
-![](https://i.imgur.com/2MoTh8r.png)
-
+* 進入兩種 mode 之後，
 ###### tags: `Github`
