@@ -4,7 +4,7 @@ import random
 import numpy as np
 from matplotlib import pyplot as plt
 
-def arithmetic(text, data_length, set, probability):
+def arithmetic(text, set, probability):
     # Fool-Proof Mechanism
     if len(set) != len(probability) or round(sum(probability)) != 1:
         print('=== ERROR !!!!! ===')
@@ -123,11 +123,11 @@ if __name__ == '__main__':
     data_length = 500
     text = random_data(set, probability, data_length)
     print('Random text :', text, sys.getsizeof(text))
-    ciphertext = arithmetic(text, data_length, set, probability)
+    ciphertext = arithmetic(text, set, probability)
     print('Ciphertext :', ciphertext, sys.getsizeof(ciphertext))
     recovered_text = inv_arithmetic(ciphertext, data_length, set, probability)
     print('Recovered text :', recovered_text)
-    ciphertext1 = arithmetic(recovered_text, data_length, set, probability)
+    ciphertext1 = arithmetic(recovered_text, set, probability)
     print('Coding completion: ', text == recovered_text)
 
     # Comparison with data length
@@ -144,7 +144,7 @@ if __name__ == '__main__':
         for j in range(number_data):
             text = random_data(set, probability, data_length)
             original_data += sys.getsizeof(text)
-            ciphertext = arithmetic(text, data_length, set, probability)
+            ciphertext = arithmetic(text, set, probability)
             compression_data += sys.getsizeof(ciphertext)
             text1 = inv_arithmetic(ciphertext, data_length, set, probability)
             if text != text1:
@@ -182,7 +182,7 @@ if __name__ == '__main__':
         for j in range(number_data):
             text = random_data(set, probability, data_length)
             original_data += sys.getsizeof(text)
-            ciphertext = arithmetic(text, data_length, set, probability)
+            ciphertext = arithmetic(text, set, probability)
             compression_data += sys.getsizeof(ciphertext)
             text1 = inv_arithmetic(ciphertext, data_length, set, probability)
             if text != text1:
