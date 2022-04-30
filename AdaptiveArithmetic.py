@@ -10,7 +10,7 @@ def inteval(dic):
     for k in dic.keys():
         if k != 'total':
             inte[k] = [prev, prev + dic[k]/dic['total']]
-            prev = prev + dic[k]/dic['total']
+            prev += dic[k]/dic['total']
     return inte
 
 def adaptivearithmetic(text, set):

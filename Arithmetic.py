@@ -74,12 +74,12 @@ def inv_arithmetic(ciphertext, data_length, set, probability):
     j, times = 1, 0
     recovered_text = []
     for i in range(data_length):
-        check = 1
+        check = True
         while check:
             for_break = True
             for n in range(len(inteval)-1):
                 if lower + inteval[n] * (upper-lower) <= lower1 and lower + inteval[n+1] * (upper-lower) >= upper1:
-                    check = 0
+                    check = False
                     for_break = False
                     break
             if for_break:
