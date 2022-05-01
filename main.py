@@ -88,5 +88,8 @@ if __name__ == '__main__':
                 print('Recovered text = \'{}\'\n'.format(recovered_text))
                 if text == recovered_text: print('Successful Coding\n')
                 else: print('Failed Coding\n')
+        elif mode == 'quit':
+            print('\n===== See ya !!! ======')
+            sys.exit()
         else:
             print('ONLY 0 OR 1 !!!!!!')
