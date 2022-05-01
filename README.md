@@ -244,5 +244,17 @@ for i in range(N):
 
 > 若要更改 data set 或是 probability of data 的話，請事先進入 `main.py` 進行編輯
 
-* 進入兩種 mode 之後，
+* 進入兩種 mode 之後，輸入 text message，就會根據選擇的 mode 做 encoding & decoding。
+
+    ![](https://i.imgur.com/8B2SeXC.jpg)
+
+* 如果想要換模式，則輸入 `change` 可以換模式。
+
+    ![](https://i.imgur.com/VcLuBii.jpg)
+
+* 如果想要離開，則輸入 `quit` 可以離開。
+
+    ![](https://i.imgur.com/hp3tMtS.jpg)
+
+
 ###### tags: `Github`
