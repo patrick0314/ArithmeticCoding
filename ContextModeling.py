@@ -61,7 +61,6 @@ def contextmodeling(text, set, width):
                 ciphertext += '0'
                 lower *= 2
                 upper *= 2
-        print(model)
 
     # Find C and b s.t. lower < C * k^-b < (C+1) * k^-b < upper where k = 2 in general
     # Traditional method to find b and C
@@ -135,7 +134,6 @@ def inv_contextmodeling(ciphertext, data_length, set, width):
                 lower1 *= 2
                 upper1 *= 2
                 times += 1
-        print(model)
     
     return ''.join(recovered_text)
 
