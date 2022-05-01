@@ -1,5 +1,5 @@
 from Arithmetic import arithmetic, inv_arithmetic
-from AdaptiveArithmetic import adaptivearithmetic, inv_adaptivearithmetic
+from Adaptive import adaptive, inv_adaptive
 
 import time
 import sys
@@ -80,8 +80,8 @@ if __name__ == '__main__':
                 
                 # Computation
                 time_start = time.time()
-                ciphertext = adaptivearithmetic(text, data_set)
-                recovered_text = inv_adaptivearithmetic(ciphertext, len(text), data_set)
+                ciphertext = adaptive(text, data_set)
+                recovered_text = inv_adaptive(ciphertext, len(text), data_set)
                 time_end = time.time()
                 print('\nTime Cost = {}'.format(time_end-time_start))
                 print('Arithmetic coding of \'{}\' = {}'.format(text, ciphertext))

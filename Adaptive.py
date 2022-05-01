@@ -13,7 +13,7 @@ def inteval(dic):
             prev += dic[k]/dic['total']
     return inte
 
-def adaptivearithmetic(text, set):
+def adaptive(text, set):
     # Preprocess - Number of Element
     dic = {'total':0}
     for s in set:
@@ -62,7 +62,7 @@ def adaptivearithmetic(text, set):
 
     return ciphertext + str(bin(C)[2:]).zfill(b)
 
-def inv_adaptivearithmetic(ciphertext, data_length, set):
+def inv_adaptive(ciphertext, data_length, set):
     # Preprocess - Number of Element
     dic = {'total':0}
     for s in set:
@@ -126,9 +126,9 @@ if __name__ == '__main__':
     text = 'aaabaa'
     text = random_data(set, [0.8, 0.2], 3000)
     print('Random text :', text)
-    ciphertext = adaptivearithmetic(text, set)
+    ciphertext = adaptive(text, set)
     print('Ciphertext :', ciphertext)
-    recovered_text = inv_adaptivearithmetic(ciphertext, len(text), set)
+    recovered_text = inv_adaptive(ciphertext, len(text), set)
     print('Recovered text :', recovered_text)
     print('Coding completion: ', text == recovered_text)
 
@@ -146,9 +146,9 @@ if __name__ == '__main__':
         for j in range(number_data):
             text = random_data(set, probability, data_length)
             original_data += sys.getsizeof(text)
-            ciphertext = adaptivearithmetic(text, set)
+            ciphertext = adaptive(text, set)
             compression_data += sys.getsizeof(ciphertext)
-            text1 = inv_adaptivearithmetic(ciphertext, data_length, set)
+            text1 = inv_adaptive(ciphertext, data_length, set)
             if text != text1:
                 count += 1
         time_end = time.time()
@@ -184,9 +184,9 @@ if __name__ == '__main__':
         for j in range(number_data):
             text = random_data(set, probability, data_length)
             original_data += sys.getsizeof(text)
-            ciphertext = adaptivearithmetic(text, set)
+            ciphertext = adaptive(text, set)
             compression_data += sys.getsizeof(ciphertext)
-            text1 = inv_adaptivearithmetic(ciphertext, data_length, set)
+            text1 = inv_adaptive(ciphertext, data_length, set)
             if text != text1:
                 count += 1
         time_end = time.time()
