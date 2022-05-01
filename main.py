@@ -85,7 +85,7 @@ if __name__ == '__main__':
                 time_end = time.time()
                 print('\nTime Cost = {}'.format(time_end-time_start))
                 print('Arithmetic coding of \'{}\' = {}'.format(text, ciphertext))
-                print('Recovered text = \'{}\'\n'.format(recovered_text))
+                print('Recovered text = \'{}\''.format(recovered_text))
                 if text == recovered_text: print('Successful Coding\n')
                 else: print('Failed Coding\n')
         elif mode == 'quit':
