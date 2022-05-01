@@ -125,12 +125,12 @@ if __name__ == '__main__':
     set = ['a', 'b']
     text = 'aaabaa'
     text = random_data(set, [0.8, 0.2], 3000)
-    print('Random text :', text)
+    print('\n=== Random text : {} ==='.format(text))
     ciphertext = adaptive(text, set)
-    print('Ciphertext :', ciphertext)
+    print('=== Ciphertext : {} ==='.format(ciphertext))
     recovered_text = inv_adaptive(ciphertext, len(text), set)
-    print('Recovered text :', recovered_text)
-    print('Coding completion: ', text == recovered_text)
+    print('=== Recovered text : {} ==='.format(recovered_text))
+    print('=== Coding completion : {} ===\n'.format(text == recovered_text))
 
     # Comparison with data length
     '''

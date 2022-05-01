@@ -61,6 +61,7 @@ def contextmodeling(text, set, width):
                 ciphertext += '0'
                 lower *= 2
                 upper *= 2
+        print(model)
 
     # Find C and b s.t. lower < C * k^-b < (C+1) * k^-b < upper where k = 2 in general
     # Traditional method to find b and C
@@ -134,6 +135,7 @@ def inv_contextmodeling(ciphertext, data_length, set, width):
                 lower1 *= 2
                 upper1 *= 2
                 times += 1
+        print(model)
     
     return ''.join(recovered_text)
 
@@ -146,16 +148,15 @@ def random_data(set, probability, data_length):
 
 if __name__ == '__main__':
     set = ['a', 'b']
-    width = 3
-    text = 'aaabaa'
-    text = random_data(set, [0.8, 0.2], 5000)
+    width = 2
+    text = random_data(set, [0.8, 0.2], 5)
 
-    print('Random text :', text)
+    print('\n=== Random text : {} ==='.format(text))
     ciphertext = contextmodeling(text, set, width)
-    print('Ciphertext :', ciphertext)
+    print('=== Ciphertext : {} ==='.format(ciphertext))
     recovered_text = inv_contextmodeling(ciphertext, len(text), set, width)
-    print('Recovered text :', recovered_text)
-    print('Coding completion: ', text == recovered_text)
+    print('=== Recovered text : {} ==='.format(recovered_text))
+    print('=== Coding completion : {} ===\n'.format(text == recovered_text))
 
     # Comparison with data length
     '''
@@ -187,7 +188,6 @@ if __name__ == '__main__':
     '''
 
     # Comparison with set length and different distribution of data
-    '''
     '''
     set1 = ['a', 'b']
     probability1 = [0.5, 0.5]
@@ -223,3 +223,4 @@ if __name__ == '__main__':
         print('Spending time = {}'.format(time_end-time_start))
         print('Accuracy = {} %'.format((number_data-count)/number_data*100))
     print('\n')
+    '''
