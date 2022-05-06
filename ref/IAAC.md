@@ -61,17 +61,35 @@ CAAC 被廣泛應用在 text compression 以及 lossy / lossless image compressi
     $F[v_1] ← F[v_1] + A[n]B[v, v_1] \quad \text{if} \ \ X[n]=v$
 
 * **The Mutual-Learning Scheme**
+    此方法是針對 context modeling 去做改進。$F_j[v]$ 以及 $F_q[v]$ 分別是對應到 j-th context 以及 q-th context。如果 j-th context 和 q-th context 有高度的相關性，可以合理推測兩者會有類似的 probability distribution。因此在對 $F_j[v]$ 做 update 的時候，應該也要對 $F_q[v]$ 做調整。
     
+    當 $X[n] = v$ 時，j-th context 的 frequency table 的 update 應該是：
+    
+    $F_j[v_1] ← F_j[v_1] + A[n]B[v, v_1]$
+    
+    此外，q-th context 的 frequency table 應該也要做調整：
+    
+    $F_q[v_1] ← F_q[v_1] + A[n]B[v, v_1]C[j, q]$
+    
+    * $C[j, q]$ 介於 0 - 1
 
 * **The Local Frequency Table**
+    
 
-## Ⅲ.
+雖然引進的很多新的方法，但是 proposed AAC 依然保持了 linear to the input data size。其中 initializing the frequency、increasing the adjusting step、the local frequency table 對於 computation time 都沒有什麼影響。而 range-adjusting scheme 和 mutual-learning 則可以依靠 table loopup 來節省時間。
 
+## Ⅲ.Applications
 
+* **Example for EDP Lossless Image Compression**
+    
 
-## Ⅳ.
-## Ⅴ.
-## Ⅵ.
-## Ⅶ.
+* **Encoding DC and AC Terms in JPEG**
+    
+
+* **Example for JPEG2000**
+    
+
+* **Example for Motion Vector Difference Encoding in Video Compression**
+   
 
 ###### tags: `Paper`
