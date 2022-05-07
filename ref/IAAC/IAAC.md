@@ -74,7 +74,17 @@ CAAC 被廣泛應用在 text compression 以及 lossy / lossless image compressi
     * $C[j, q]$ 介於 0 - 1
 
 * **The Local Frequency Table**
+    除了 initial table 之外，另外建立一個 local frequency table，在 initial table 不斷被更新的時候，如果我們可以確定說這些 data 有一定的規律，則可以根據這些規律去對 initial table 做變化，讓 frequency table 更符合想要情境。
     
+    如果我們可以確定說 $F[v]$ 應該有更高的 frequency：
+    
+    $F_L[v] = \rho[v]F[v], \quad \rho[v]>1$
+    
+    當 $F[v] 超過 usual case 之後：
+    
+    $F_L[v] = F[v] \quad \text{otherwise}$
+    
+    這樣可以避免一些 data 在各種極端值或是分散不均時會有 error。
 
 雖然引進的很多新的方法，但是 proposed AAC 依然保持了 linear to the input data size。其中 initializing the frequency、increasing the adjusting step、the local frequency table 對於 computation time 都沒有什麼影響。而 range-adjusting scheme 和 mutual-learning 則可以依靠 table loopup 來節省時間。
 
@@ -84,7 +94,8 @@ CAAC 被廣泛應用在 text compression 以及 lossy / lossless image compressi
     
 
 * **Encoding DC and AC Terms in JPEG**
-    
+    * DC differences
+    * AC Coefficients
 
 * **Example for JPEG2000**
     
