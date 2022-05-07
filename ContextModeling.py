@@ -14,20 +14,21 @@ def inteval(dic):
             prev += dic[k]/dic['total']
     return inte
 
-def modeling(perms, set):
+def modeling(set):
+    # dic[0]: previous is consonant
+    # dic[1]: previous is vowel
+    # dic[2]: the beginning of a sentence or previous is ' '
+    # dic[3]: previous is ',' or '.'
     dic = {}
-    for perm in perms:
-        tmp = ''.join(perm)
-        dic[tmp] = {'total':0}
+    for i in range(4):
+        dic[i] = {'total':29}
         for s in set:
-            dic[tmp][s] = 1
-            dic[tmp]['total'] += 1
+            dic[i][s] = 1
     return dic
 
-def contextmodeling(text, set, width):
+def contextmodeling(text, set):
     # Context Modeling
-    perms = product(''.join(set), repeat=width)
-    model = modeling(perms, set)
+    model = modeling(set)
     
     # Arithmetic Encoding
     # Initial Condition
@@ -36,22 +37,36 @@ def contextmodeling(text, set, width):
     # Recursion
     # If upper <= 0.5 or lower > 0.5, we can directly add 0 or 1 into the ciphertext
     ciphertext = ''
-    window = ''
+    prev_letter = ''
     for t in text:
-        if len(window) < width:
-            dic = model[t*width]
-        else:
-            dic = model[window]
+        # Judge context and select table
+        if prev_letter in ['a', 'e', 'i', 'o', 'u']: dic = model[1]
+        elif prev_letter == '' or prev_letter == ' ': dic = model[2]
+        elif prev_letter == ',' or prev_letter == '.': dic = model[3]
+        else: dic = model[0]
+        # Update lower & upper bound
         inte = inteval(dic)
         prev = lower
         lower = prev + inte[t][0] * (upper - prev)
         upper = prev + inte[t][1] * (upper - prev)
-        if len(window) < width:
-            window += t
+        # Update context table and prev_letter
+        if prev_letter in ['a', 'e', 'i', 'o', 'u']:
+            model[1][t] += 1
+            model[1]['total'] += 1
+            prev_letter = t
+        elif prev_letter == '' or prev_letter == ' ':
+            model[2][t] += 1
+            model[2]['total'] += 1
+            prev_letter = t
+        elif prev_letter == ',' or prev_letter == '.':
+            model[3][t] += 1
+            model[3]['total'] += 1
+            prev_letter = t
         else:
-            model[window][t] += 1
-            model[window]['total'] += 1
-            window = window[1:] + t
+            model[0][t] += 1
+            model[0]['total'] += 1
+            prev_letter = t
+        # Prevent from floating point error
         while lower > 0.5 or upper <= 0.5:
             if lower > 0.5:
                 ciphertext += '1'
@@ -61,7 +76,7 @@ def contextmodeling(text, set, width):
                 ciphertext += '0'
                 lower *= 2
                 upper *= 2
-
+                
     # Find C and b s.t. lower < C * k^-b < (C+1) * k^-b < upper where k = 2 in general
     # Traditional method to find b and C
     b = 2
@@ -80,22 +95,23 @@ def contextmodeling(text, set, width):
 
     return ciphertext + str(bin(C)[2:]).zfill(b)
 
-def inv_contextmodeling(ciphertext, data_length, set, width):
+def inv_contextmodeling(ciphertext, data_length, set):
     # Context Modeling
-    perms = product(''.join(set), repeat=width)
-    model = modeling(perms, set)
+    model = modeling(set)
 
     # Arithmetic Decoding
     lower, upper = 0, 1
     lower1, upper1 = 0, 1
     j, times = 1, 0
-    window = ''
+    prev_letter = ''
     recovered_text = []
     for i in range(data_length):
-        if len(window) < width:
-            dic = model[set[0]*width]
-        else:
-            dic = model[window]
+        # Judge context and select table
+        if prev_letter in ['a', 'e', 'i', 'o', 'u']: dic = model[1]
+        elif prev_letter == '' or prev_letter == ' ': dic = model[2]
+        elif prev_letter == ',' or prev_letter == '.': dic = model[3]
+        else: dic = model[0]
+        # Find which text is in the range
         inte = inteval(dic)
         check = 1
         while check:
@@ -112,15 +128,28 @@ def inv_contextmodeling(ciphertext, data_length, set, width):
                 j += 1
 
         recovered_text.append(k)
-        if len(window) < width:
-            window += k
-        else:
-            model[window][k] += 1
-            model[window]['total'] += 1
-            window = window[1:] + k
+        # Update lower & upper bound
         prev = lower
         lower = prev + inte[k][0] * (upper-prev)
         upper = prev + inte[k][1] * (upper-prev)
+        # Update context table and prev_letter
+        if prev_letter in ['a', 'e', 'i', 'o', 'u']:
+            model[1][k] += 1
+            model[1]['total'] += 1
+            prev_letter = k
+        elif prev_letter == '' or prev_letter == ' ':
+            model[2][k] += 1
+            model[2]['total'] += 1
+            prev_letter = k
+        elif prev_letter == ',' or prev_letter == '.':
+            model[3][k] += 1
+            model[3]['total'] += 1
+            prev_letter = k
+        else:
+            model[0][k] += 1
+            model[0]['total'] += 1
+            prev_letter = k
+        # Prevent from floating point error
         while lower > 0.5 or upper <= 0.5:
             if lower > 0.5:
                 lower = lower * 2 - 1
@@ -145,80 +174,29 @@ def random_data(set, probability, data_length):
     return text
 
 if __name__ == '__main__':
-    set = ['a', 'b']
-    width = 2
-    text = random_data(set, [0.8, 0.2], 5)
+    '''
+    set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', \
+                'r', 's', 't' , 'u', 'v' , 'w', 'x', 'y' ,'z', ',', '.', ' ']
+    text = 'this is an apple.'
 
     print('\n=== Random text : {} ==='.format(text))
-    ciphertext = contextmodeling(text, set, width)
+    ciphertext = contextmodeling(text, set)
     print('=== Ciphertext : {} ==='.format(ciphertext))
-    recovered_text = inv_contextmodeling(ciphertext, len(text), set, width)
+    recovered_text = inv_contextmodeling(ciphertext, len(text), set)
     print('=== Recovered text : {} ==='.format(recovered_text))
     print('=== Coding completion : {} ===\n'.format(text == recovered_text))
-
-    # Comparison with data length
-    '''
-    set = ['a', 'b', 'c', 'd', 'e']
-    probability = [0.8, 0.05, 0.1, 0.025, 0.025]
-    width = 3
-    number_data = 1000
-    for i in range(5):
-        data_length = 1000 * (i+1)
-        original_data = 0
-        compression_data = 0
-        count = 0
-        time_start = time.time()
-        for j in range(number_data):
-            text = random_data(set, probability, data_length)
-            original_data += sys.getsizeof(text)
-            ciphertext = contextmodeling(text, set, width)
-            compression_data += sys.getsizeof(ciphertext)
-            text1 = inv_contextmodeling(ciphertext, data_length, set, width)
-            if text != text1:
-                count += 1
-        time_end = time.time()
-        print('\nset = {}, data_length = {}, width of window = {}'.format(set, data_length, width))
-        print('Each test with {} random data'.format(number_data))
-        print('Test {} : Compression Rate = {}'.format(i+1, (original_data * len(set)) / (compression_data * 2)))
-        print('Test {} : Spending time = {}'.format(i+1, time_end-time_start))
-        print('Test {} : Accuracy = {} %'.format(i+1, (number_data-count)/number_data*100))
-    print('\n')
     '''
 
-    # Comparison with set length and different distribution of data
-    '''
-    set1 = ['a', 'b']
-    probability1 = [0.5, 0.5]
-    set2 = ['a', 'b']
-    probability2 = [0.8, 0.2]
-    set3 = ['a', 'b', 'c', 'd', 'e']
-    probability3 = [0.2, 0.2, 0.2, 0.2, 0.2]
-    set4 = ['a', 'b', 'c', 'd', 'e']
-    probability4 = [0.8, 0.05, 0.1, 0.025, 0.025]
-    set5 = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
-    probability5 = [0.8, 0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 0.0125, 0.0125]
-    number_data = 1000
-    sets = [set1, set2, set3, set4, set5]
-    probabilitys = [probability1, probability2, probability3, probability4, probability5]
-    for set, probability in zip(sets, probabilitys):
-        data_length = 5000
-        original_data = 0
-        compression_data = 0
-        count = 0
-        time_start = time.time()
-        for j in range(number_data):
-            text = random_data(set, probability, data_length)
-            original_data += sys.getsizeof(text)
-            ciphertext = contextmodeling(text, set, width)
-            compression_data += sys.getsizeof(ciphertext)
-            text1 = inv_contextmodeling(ciphertext, data_length, set, width)
-            if text != text1:
-                count += 1
-        time_end = time.time()
-        print('\nset = {}, probability = {}, data_length = {}, width of window = {}'.format(set, probability, data_length, width))
-        print('Each test with {} random data'.format(number_data))
-        print('Compression Rate = {}'.format((original_data * len(set)) / (compression_data * 2)))
-        print('Spending time = {}'.format(time_end-time_start))
-        print('Accuracy = {} %'.format((number_data-count)/number_data*100))
+    # 
     print('\n')
-    '''
+    set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', \
+                'r', 's', 't' , 'u', 'v' , 'w', 'x', 'y' ,'z', ',', '.', ' ']
+    f = open('article.txt', encoding='utf-8')
+    idx = 1
+    for line in f.readlines():
+        text  = line.lower()[:-2]
+        ciphertext = contextmodeling(text, set)
+        recovered_text = inv_contextmodeling(ciphertext, len(text), set)
+        print('Article {}: Coding completion = {} ==='.format(idx, (text==recovered_text)))
+        print('Compression ratio = {}\n'.format(sys.getsizeof(text)*29/sys.getsizeof(ciphertext)/2))
+        idx += 1
