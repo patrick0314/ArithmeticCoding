@@ -239,7 +239,7 @@ for i in range(N):
     ![](https://i.imgur.com/twvDaNu.jpg)
 
 * **Different Distribution of Data**
-* 
+
     ![](https://i.imgur.com/DoNJrMb.jpg)
 
 
