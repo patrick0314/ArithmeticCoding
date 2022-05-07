@@ -247,7 +247,7 @@ for i in range(N):
 
 * **Articles Coding**
 
-    ![](https://i.imgur.com/JrhB5hR.jpg)
+    ![](https://i.imgur.com/4WPPCgI.jpg)
 
 ## Usage
 
