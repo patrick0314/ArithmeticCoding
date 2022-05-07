@@ -1,10 +1,16 @@
 # Arithmetic Coding
 
+這個 repo 總共可分成三個部分：Arithmetic Coding、Adaptive Arithmetic Coding、Context-Modeling Adaptive Arithmetic Coding
+
+## Introduction
+
 Arithmetic coding 是將一段 text message 利用 0-1 的區間來表示。當 text message 越長，用來表示此 text message 的區間就越小，也就是代表 length of coding 就越長。
 
 而越常出現的 text，區間縮小的速度就會越慢，則可以縮短 length of coding。隨著 length of text message 的增加，Arithmetic coding 之 entropy 可以趨近無雜訊編碼的理論極限。
 
 另外，因為大部分的時候，無法事先統計好 probability distribution，因此又發明了另一種 algorithm - adaptive Arithmetic Coding。不需要事先給定 probability distribution，而是在對 text message 進行 encoding & decoding 的同時，去更新 probability distribution。
+
+最後，為了對應到真實情況，使用了條件機率，也就是說不再只是單純地做 probability distribution，而是根據不同的 context condition 去做不同的機率統計，接著根據不同的 probability distribution 去做 encoding / decoding。
 
 ## Algorithm - Encoding
 
@@ -201,6 +207,8 @@ for i in range(N):
 
 然後在 decoding 的過程中，一樣注意 floating point error 的發生，同時對 lower & upper bound 以及 lower1 & upper1 bound 去做擴增。
 
+## Context-Modeling
+
 ## Performance - Arithmetic Coding
 
 * lower bound 和 upper bound 的更新：
@@ -229,6 +237,17 @@ for i in range(N):
 * 比較不同 length of data
 
     ![](https://i.imgur.com/nynXNQf.jpg)
+
+## Performance - Context-Modeling Adaptive Atihmetic Coding
+
+* **Sentence Coding**
+
+    ![](https://i.imgur.com/P4N058a.jpg)
+
+
+* **Articles Coding**
+
+    ![](https://i.imgur.com/JrhB5hR.jpg)
 
 ## Usage
 
