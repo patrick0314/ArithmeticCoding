@@ -197,6 +197,6 @@ if __name__ == '__main__':
         text  = line.lower()[:-2]
         ciphertext = contextmodeling(text, set)
         recovered_text = inv_contextmodeling(ciphertext, len(text), set)
-        print('Article {}: Coding completion = {} ==='.format(idx, (text==recovered_text)))
+        print('=== Article {}: Coding completion = {} ==='.format(idx, (text==recovered_text)))
         print('Compression ratio = {}\n'.format(sys.getsizeof(text)*29/sys.getsizeof(ciphertext)/2))
         idx += 1
