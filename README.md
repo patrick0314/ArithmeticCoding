@@ -211,43 +211,51 @@ for i in range(N):
 
 ## Performance - Arithmetic Coding
 
-* lower bound 和 upper bound 的更新：
-
-    set = ['a', 'b'], probability = [0.8, 0.2]
-    
-    text = 'aaabaa'
+* **lower & upper bound update**：
+    set = ['a', 'b'], probability = [0.8, 0.2], text = 'aaabaa'
 
     ![](https://i.imgur.com/5F5Ir54.jpg)
 
-* 比較不同的 data set & probability distibution：
-    
-    ![](https://i.imgur.com/O1FfDLB.jpg)
+* **Simple Coding**
 
-    
-* 比較不同的 length of data：
+    ![](https://i.imgur.com/B4TTMmr.jpg)
 
-    ![](https://i.imgur.com/8GaDDYd.jpg)
+* **Different Length of Data**
+
+    ![](https://i.imgur.com/zlfmobg.jpg)
+
+* **Different Distribution of Data**
+
+    ![](https://i.imgur.com/ZqcNTdt.jpg)
 
 ## Performance - Adaptive Arithmetic Coding
 
-* 比較不同 data set & probability distribution
+* **Simple Coding**
 
-    ![](https://i.imgur.com/lSesjE1.jpg)
+    ![](https://i.imgur.com/3TPP2Cx.jpg)
 
-* 比較不同 length of data
+* **Different Length of Data**
 
-    ![](https://i.imgur.com/nynXNQf.jpg)
+    ![](https://i.imgur.com/twvDaNu.jpg)
+
+* **Different Distribution of Data**
+* 
+    ![](https://i.imgur.com/DoNJrMb.jpg)
+
 
 ## Performance - Context-Modeling Adaptive Atihmetic Coding
 
 * **Sentence Coding**
 
-    ![](https://i.imgur.com/P4N058a.jpg)
-
+    ![](https://i.imgur.com/0mZa5D2.jpg)
 
 * **Articles Coding**
 
-    ![](https://i.imgur.com/4WPPCgI.jpg)
+    ![](https://i.imgur.com/MfaPwgE.jpg)
+
+* **Normal Distribution Coding**
+
+    ![](https://i.imgur.com/rNdaIlJ.jpg)
 
 ## Usage
 
