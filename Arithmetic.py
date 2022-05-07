@@ -132,7 +132,6 @@ if __name__ == '__main__':
 
     # Comparison with data length
     '''
-    '''
     set = ['a', 'b', 'c', 'd', 'e']
     probability = [0.8, 0.05, 0.1, 0.025, 0.025]
     number_data = 500
@@ -157,9 +156,9 @@ if __name__ == '__main__':
         print('Accuracy = {} %'.format((number_data-count)/number_data*100))
         print('{} bits compressed to {} bits, ratio {}'.format(len(text)*8, len(ciphertext), len(ciphertext)/(len(text)*8)))
     print('\n')
+    '''
 
     # Comparison with set length and different distribution of data
-    '''
     '''
     set1 = ['a', 'b']
     probability1 = [0.5, 0.5]
@@ -195,3 +194,4 @@ if __name__ == '__main__':
         print('Accuracy = {} %'.format((number_data-count)/number_data*100))
         print('{} bits compressed to {} bits, ratio {}'.format(len(text)*8, len(ciphertext), len(ciphertext)/(len(text)*8)))
     print('\n')
+    '''

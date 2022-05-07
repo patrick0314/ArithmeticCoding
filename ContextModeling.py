@@ -189,7 +189,6 @@ if __name__ == '__main__':
 
     # Article
     '''
-    '''
     set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', \
                 'r', 's', 't' , 'u', 'v' , 'w', 'x', 'y' ,'z', ',', '.', ' ']
     f = open('article.txt', encoding='utf-8')
@@ -205,9 +204,9 @@ if __name__ == '__main__':
         print('Spending time = {}'.format(time_end-time_start))
         print('{} bits compressed to {} bits, ratio {}\n'.format(len(text)*8, len(ciphertext), len(ciphertext)/(len(text)*8)))
         idx += 1
+    '''
 
     #
-    '''
     '''
     set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', \
                 'r', 's', 't' , 'u', 'v' , 'w', 'x', 'y' ,'z', ',', '.', ' ']
@@ -222,3 +221,4 @@ if __name__ == '__main__':
         print('Normal distribution with variance = {} and length = {}'.format(0.01*idx, 2**20))
         print('Spending time = {}'.format(time_end-time_start))
         print('{} bits compressed to {} bits, ratio {}\n'.format(len(text)*8, len(ciphertext), len(ciphertext)/(len(text)*8)))
+    '''
