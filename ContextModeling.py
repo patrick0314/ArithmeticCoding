@@ -173,16 +173,8 @@ def random_data(set, probability, data_length):
     text = ''.join(text)
     return text
 
-def ratio(text, ciphertext):
-    bytes_in = bytes(text, 'utf-8')
-    bytes_out = bytes(ciphertext, 'utf-8')
-    lbi = len(bytes_in)
-    lbo = len(bytes_out)
-    ratio = lbo / lbi
-    message = '%d bytes compressed to %d bytes, ratio %0.9f\n'%(lbi,lbo,ratio)
-    print(message)
-
 if __name__ == '__main__':
+    '''
     '''
     set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', \
                 'r', 's', 't' , 'u', 'v' , 'w', 'x', 'y' ,'z', ',', '.', ' ']
@@ -192,25 +184,11 @@ if __name__ == '__main__':
     print('=== Ciphertext : {} ==='.format(ciphertext))
     recovered_text = inv_contextmodeling(ciphertext, len(text), set)
     print('=== Recovered text : {} ==='.format(recovered_text))
-    print('=== Coding completion : {} ===\n'.format(text == recovered_text))
-    '''
-
-    #
-    '''
-    set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', \
-                'r', 's', 't' , 'u', 'v' , 'w', 'x', 'y' ,'z', ',', '.', ' ']
-    print('\n')
-    for idx in range(5):
-        text = np.random.normal(15, 0.001, 2**20)
-        text = [set[int(i)] for i in text]
-        text = ''.join(text)
-        ciphertext = contextmodeling(text, set)
-        recovered_text = inv_contextmodeling(ciphertext, len(text), set)
-        print('=== Random {}: Coding completion = {} ==='.format(idx, (text==recovered_text)))
-        ratio(text, ciphertext)
-    '''
+    print('=== Coding completion : {} ==='.format(text == recovered_text))
+    print('=== {} bits compressed to {} bits, ratio {} ===\n'.format(len(text)*8, len(ciphertext), len(ciphertext)/(len(text)*8)))
 
     # Article
+    '''
     '''
     set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', \
                 'r', 's', 't' , 'u', 'v' , 'w', 'x', 'y' ,'z', ',', '.', ' ']
@@ -218,11 +196,29 @@ if __name__ == '__main__':
     idx = 1
     print('\n')
     for line in f.readlines():
+        time_start = time.time()
         text  = line.lower()[:-2]
         ciphertext = contextmodeling(text, set)
         recovered_text = inv_contextmodeling(ciphertext, len(text), set)
+        time_end = time.time()
         print('=== Article {}: Coding completion = {} ==='.format(idx, (text==recovered_text)))
-        print('Compression ratio = {}\n'.format(sys.getsizeof(text)*29/sys.getsizeof(ciphertext)/2))
-        #ratio(text, ciphertext)
+        print('Spending time = {}'.format(time_end-time_start))
+        print('{} bits compressed to {} bits, ratio {}\n'.format(len(text)*8, len(ciphertext), len(ciphertext)/(len(text)*8)))
         idx += 1
+
+    #
     '''
+    '''
+    set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', \
+                'r', 's', 't' , 'u', 'v' , 'w', 'x', 'y' ,'z', ',', '.', ' ']
+    print('\n')
+    for idx in range(5):
+        text = np.random.normal(15, 0.01*idx, 2**20)
+        text = [set[int(i)] for i in text]
+        text = ''.join(text)
+        ciphertext = contextmodeling(text, set)
+        recovered_text = inv_contextmodeling(ciphertext, len(text), set)
+        print('=== Random {}: Coding completion = {} ==='.format(idx, (text==recovered_text)))
+        print('Normal distribution with variance = {} and length = {}'.format(0.01*idx, 2**20))
+        print('Spending time = {}'.format(time_end-time_start))
+        print('{} bits compressed to {} bits, ratio {}\n'.format(len(text)*8, len(ciphertext), len(ciphertext)/(len(text)*8)))

@@ -124,15 +124,16 @@ if __name__ == '__main__':
     '''
     set = ['a', 'b']
     text = 'aaabaa'
-    text = random_data(set, [0.8, 0.2], 3000)
     print('\n=== Random text : {} ==='.format(text))
     ciphertext = adaptive(text, set)
     print('=== Ciphertext : {} ==='.format(ciphertext))
     recovered_text = inv_adaptive(ciphertext, len(text), set)
     print('=== Recovered text : {} ==='.format(recovered_text))
-    print('=== Coding completion : {} ===\n'.format(text == recovered_text))
+    print('=== Coding completion : {} ==='.format(text == recovered_text))
+    print('=== {} bits compressed to {} bits, ratio {} ===\n'.format(len(text)*8, len(ciphertext), len(ciphertext)/(len(text)*8)))
 
     # Comparison with data length
+    '''
     '''
     set = ['a', 'b', 'c', 'd', 'e']
     probability = [0.8, 0.05, 0.1, 0.025, 0.025]
@@ -154,13 +155,14 @@ if __name__ == '__main__':
         time_end = time.time()
         print('\nset = {}, data_length = {}'.format(set, data_length))
         print('Each test with {} random data'.format(number_data))
-        print('Test {} : Compression Rate = {}'.format(i+1, (original_data * len(set)) / (compression_data * 2)))
-        print('Test {} : Spending time = {}'.format(i+1, time_end-time_start))
-        print('Test {} : Accuracy = {} %'.format(i+1, (number_data-count)/number_data*100))
+        print('Spending time = {}'.format(time_end-time_start))
+        print('Accuracy = {} %'.format((number_data-count)/number_data*100))
+        print('{} bits compressed to {} bits, ratio {}'.format(len(text)*8, len(ciphertext), len(ciphertext)/(len(text)*8)))
+        
     print('\n')
-    '''
 
     # Comparison with set length and different distribution of data
+    '''
     '''
     set1 = ['a', 'b']
     probability1 = [0.5, 0.5]
@@ -192,8 +194,8 @@ if __name__ == '__main__':
         time_end = time.time()
         print('\nset = {}, probability = {}, data_length = {}'.format(set, probability, data_length))
         print('Each test with {} random data'.format(number_data))
-        print('Compression Rate = {}'.format((original_data * len(set)) / (compression_data * 2)))
         print('Spending time = {}'.format(time_end-time_start))
         print('Accuracy = {} %'.format((number_data-count)/number_data*100))
+        print('{} bits compressed to {} bits, ratio {}'.format(len(text)*8, len(ciphertext), len(ciphertext)/(len(text)*8)))
+        
     print('\n')
-    '''
